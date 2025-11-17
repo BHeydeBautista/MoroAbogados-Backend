@@ -6,7 +6,8 @@ export class InstagramController {
   constructor(private instagramService: InstagramService) {}
 
   @Get()
-  async getMedia() {
-    return this.instagramService.getMedia();
+  async getPosts() {
+    const data = await this.instagramService.getLatestPosts();
+    return { data };
   }
 }

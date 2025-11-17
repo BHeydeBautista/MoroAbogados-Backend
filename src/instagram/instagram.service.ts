@@ -1,28 +1,20 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import fetch from 'node-fetch';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
 
 @Injectable()
 export class InstagramService {
-  async getMedia() {
-    const USER_ID = process.env.INSTAGRAM_USER_ID;
-    const ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
+  constructor(private config: ConfigService) {}
 
-    if (!USER_ID || !ACCESS_TOKEN) {
-      throw new InternalServerErrorException(
-        'Falta INSTAGRAM_USER_ID o INSTAGRAM_ACCESS_TOKEN',
-      );
-    }
+  async getLatestPosts() {
+    const userId = this.config.get<string>('INSTAGRAM_USER_ID');
+    const token = this.config.get<string>('INSTAGRAM_ACCESS_TOKEN');
+    const ttl = this.config.get<number>('INSTAGRAM_CACHE_TTL') ?? 60;
 
-    const url = `https://graph.instagram.com/${USER_ID}/media?fields=id,caption,media_url,media_type,permalink,timestamp,thumbnail_url&limit=9&access_token=${ACCESS_TOKEN}`;
+    const url = `https://graph.instagram.com/${userId}/media?fields=id,caption,media_url,permalink&access_token=${token}`;
 
-    const res = await fetch(url);
+    const res = await axios.get(url);
 
-    if (!res.ok) {
-      const text = await res.text();
-      console.error('Instagram Error:', text);
-      throw new InternalServerErrorException('Error al obtener publicaciones');
-    }
-
-    return await res.json();
+    return res.data;
   }
 }
