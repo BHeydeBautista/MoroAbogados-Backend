@@ -6,12 +6,12 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'http://localhost:3000',  
-      'https://moro-abogados.vercel.app',
+      'http://localhost:3000',
+      'https://moro-abogados.vercel.app'
     ],
-    methods: 'GET',
+    methods: ['GET'],
   });
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3001, '0.0.0.0');
 }
 bootstrap();
