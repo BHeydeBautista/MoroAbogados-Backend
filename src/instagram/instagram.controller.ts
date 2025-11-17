@@ -7,7 +7,8 @@ export class InstagramController {
 
   @Get()
   async getPosts() {
-    const data = await this.instagramService.getLatestPosts();
-    return { data };
+    const response = await this.instagramService.getLatestPosts();
+
+    return { data: response.data };
   }
 }
