@@ -7,7 +7,8 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
-      'https://moro-abogados.vercel.app'
+      'https://moro-abogados.vercel.app',
+      'https://www.moroabogados.com.ar/'
     ],
     methods: ['GET'],
   });
