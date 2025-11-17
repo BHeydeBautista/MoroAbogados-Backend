@@ -8,7 +8,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'https://moro-abogados.vercel.app',
-      'https://www.moroabogados.com.ar/'
+      'https://www.moroabogados.com.ar'
     ],
     methods: ['GET'],
   });
