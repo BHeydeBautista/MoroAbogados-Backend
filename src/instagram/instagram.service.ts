@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 @Injectable()
 export class InstagramService {
@@ -22,8 +22,23 @@ export class InstagramService {
 
     const url = `https://graph.instagram.com/${userId}/media?fields=${fields}&limit=25&access_token=${token}`;
 
-    const res = await axios.get(url);
-
-    return res.data; 
+    try {
+      const res = await axios.get(url);
+      return res.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const instagramError = error.response?.data?.error;
+        console.error('Instagram API Error:', {
+          message: instagramError?.message,
+          code: instagramError?.code,
+          status: error.response?.status
+        });
+        
+        throw new InternalServerErrorException(
+          `Instagram API Error: ${instagramError?.message || 'Unknown error'}`
+        );
+      }
+      throw new InternalServerErrorException('Failed to fetch Instagram posts');
+    }
   }
 }
